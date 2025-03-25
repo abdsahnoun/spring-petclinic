@@ -43,12 +43,12 @@
 
   <dependencies>
     <!-- Spring and Spring Boot dependencies -->
-	 <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-tomcat</artifactId>
-	  <scope>provided</scope>
-    </dependency>
     <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-tomcat</artifactId>
+    <scope>provided</scope>
+   </dependency>
+	<dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
@@ -91,7 +91,7 @@
     </dependency>
     <dependency>
       <groupId>com.mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
+      <artifactId>mysql-connector-j</artifactId>
 	  <version>8.0.33</version>
       <scope>runtime</scope>
     </dependency>
