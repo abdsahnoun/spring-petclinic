@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent {label 'master'}
     
     parameters {
         choice(name: 'DEPLOY_ENV', choices: ['STAGING', 'PROD'], description: 'Choisir l\'environnement de déploiement')
@@ -42,7 +42,8 @@ pipeline {
                 // Construction du projet avec le profil spécifique à l'environnement
                 script {
                     def profile = params.DEPLOY_ENV.toLowerCase()
-                    sh "mvn clean package -DskipTests=${params.SKIP_TESTS} -P${profile}"
+                    sh "mvn spring-javaformat:apply"
+                    sh "mvn clean package -DskipTests=${params.SKIP_TESTS} -P${profile} -Dspring-javaformat.skip=true"
                 }
                 
                 // Archiver l'artefact dans Jenkins si demandé
