@@ -36,8 +36,6 @@ pipeline {
                 checkout scm
             }
         }
-
-     
         
         stage('Build') {
             steps {
@@ -69,8 +67,7 @@ pipeline {
                 junit '**/target/surefire-reports/*.xml'
             }
         }
-
-            stage('Sonar Analysis') {
+        stage('Analysis with SonarQube') {
             steps {
                 echo 'Run sonarQube Analysis'
                 withSonarQubeEnv(installationName : 'sonarServer' , credentialsId : 'token4sonar') 
@@ -88,22 +85,25 @@ pipeline {
                     sh "chmod +x scripts/deploy.sh"
                     
                     // Exécuter le script de déploiement
-                    sh "./scripts/deploy.sh ${params.DEPLOY_ENV} target/spring-${APP_NAME}*.war"
+                    sh "./scripts/deploy.sh ${params.DEPLOY_ENV} target/${APP_NAME}*.war"
                     
                     // Archiver l'artefact avec version dans un répertoire centralisé
+                   // def version = sh(script: "grep -m 1 '<version>' pom.xml | sed -E 's/.*<version>(.*)<\\/version>.*/\\1/'", returnStdout: true).trim()
                     def version = "3.4.0-SNAPSHOT"
                     def deployEnv = params.DEPLOY_ENV.toLowerCase()
                     
                     sh """
                         # Créer le répertoire des artefacts s'il n'existe pas
-                        # sudo mkdir -p ${ARTIFACTS_DIR}/${deployEnv}
+                       // sh 'echo "ARTIFACTS_DIR=${ARTIFACTS_DIR}, deployEnv=${deployEnv}, APP_NAME=${APP_NAME}, version=${version}, BUILD_NUMBER=${BUILD_NUMBER}"'
+                        //sudo mkdir -p ${ARTIFACTS_DIR}/${deployEnv}
                         
                         # Copier le WAR avec un nom incluant la version
-                        # sudo  cp target/${APP_NAME}.war ${ARTIFACTS_DIR}/${deployEnv}/${APP_NAME}-${version}-${BUILD_NUMBER}.war
+                        //sudo cp target/${APP_NAME}.war ${ARTIFACTS_DIR}/${deployEnv}/${APP_NAME}-${version}-${BUILD_NUMBER}.war
                         
                         # Créer un lien symbolique vers la dernière version
-                        #sudo  ln -sf ${ARTIFACTS_DIR}/${deployEnv}/${APP_NAME}-${version}-${BUILD_NUMBER}.war ${ARTIFACTS_DIR}/${deployEnv}/${APP_NAME}-latest.war
+                       // ln -sf ${ARTIFACTS_DIR}/${deployEnv}/${APP_NAME}-${version}-${BUILD_NUMBER}.war ${ARTIFACTS_DIR}/${deployEnv}/${APP_NAME}-latest.war
                     """
+                    
                 }
             }
         }
@@ -138,3 +138,4 @@ pipeline {
         }
     }
 }
+
