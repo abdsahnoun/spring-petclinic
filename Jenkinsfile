@@ -36,6 +36,16 @@ pipeline {
                 checkout scm
             }
         }
+
+         stage('Sonar Analysis') {
+            steps {
+                echo 'Run sonarQube Analysis'
+                withSonarQubeEnv(installationName : 'sonarServer' , credentialsId : 'token4sonar') 
+                {
+                    sh "mvn clean package sonar:sonar"
+                    }
+            }
+        }
         
         stage('Build') {
             steps {
